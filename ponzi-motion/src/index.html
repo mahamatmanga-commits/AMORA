@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pyramide de Ponzi</title>
+<style>
+  :root { --bg: #05070f; --panel: #11152a; --line: #252b4a; --fg: #e6e9f5; --muted: #8b93b8; --accent: #4ade80; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); font: 14px/1.4 system-ui, sans-serif; }
+  body.render { background: transparent; overflow: hidden; }
+  body.render #ui { display: none; }
+  body.render canvas { width: 1080px; height: 1920px; border-radius: 0; box-shadow: none; }
+  #wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 12px 16px; height: 100%; }
+  canvas { height: calc(100% - 96px); max-width: 100%; aspect-ratio: 9 / 16; border-radius: 14px; box-shadow: 0 0 0 1px var(--line); background: #000; }
+  body.render #wrap { padding: 0; display: block; }
+  #ui { width: min(100%, 560px); display: flex; flex-direction: column; gap: 8px; }
+  .row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  button { background: var(--panel); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font: inherit; cursor: pointer; }
+  button.on { border-color: var(--accent); color: var(--accent); }
+  input[type=range] { flex: 1; accent-color: var(--accent); }
+  #time { font-variant-numeric: tabular-nums; color: var(--muted); min-width: 92px; text-align: right; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <canvas id="c" width="1080" height="1920"></canvas>
+  <div id="ui">
+    <div class="row">
+      <button id="play">Pause</button>
+      <input id="scrub" type="range" min="0" max="38" step="0.001" value="0">
+      <span id="time">0.00 s</span>
+    </div>
+    <div class="row" id="scenes"></div>
+    <div class="row" id="themes"></div>
+  </div>
+</div>
+<script src="ponzi.js"></script>
+<script>
+  const A = window.PonziAnim;
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  const params = new URLSearchParams(location.search);
+
+  if (params.has('render')) {
+    document.body.classList.add('render');
+    // utilisé par render.mjs : dessine l'instant t et renvoie un PNG
+    window.__frame = (t, theme) => { A.draw(ctx, t, theme); return canvas.toDataURL('image/png'); };
+  } else {
+    let theme = params.get('theme') || 'dark';
+    let t = 0, playing = true, last = performance.now();
+    const scrub = document.getElementById('scrub'), timeEl = document.getElementById('time'), playBtn = document.getElementById('play');
+    scrub.max = A.DURATION;
+    const sceneBox = document.getElementById('scenes');
+    A.SCENES.forEach(s => {
+      const b = document.createElement('button');
+      b.textContent = 'Scène ' + s.id;
+      b.onclick = () => { t = s.start; playing = true; playBtn.textContent = 'Pause'; };
+      sceneBox.appendChild(b);
+    });
+    const themeBox = document.getElementById('themes');
+    [['dark', 'Fond sombre'], ['light', 'Fond clair']].forEach(([k, label]) => {
+      const b = document.createElement('button');
+      b.textContent = label; b.dataset.k = k;
+      b.onclick = () => { theme = k; mark(); };
+      themeBox.appendChild(b);
+    });
+    const mark = () => [...themeBox.children].forEach(b => b.classList.toggle('on', b.dataset.k === theme));
+    mark();
+    playBtn.onclick = () => { playing = !playing; playBtn.textContent = playing ? 'Pause' : 'Lecture'; };
+    scrub.oninput = () => { t = +scrub.value; playing = false; playBtn.textContent = 'Lecture'; };
+    addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); playBtn.click(); } });
+    const loop = now => {
+      const dt = Math.min(0.1, (now - last) / 1000); last = now;
+      if (playing) { t += dt; if (t > A.DURATION + 1) t = 0; }
+      A.draw(ctx, Math.min(t, A.DURATION), theme);
+      scrub.value = Math.min(t, A.DURATION);
+      const sc = A.SCENES.find(s => t >= s.start && t < s.end) || A.SCENES[A.SCENES.length - 1];
+      [...sceneBox.children].forEach((b, i) => b.classList.toggle('on', A.SCENES[i] === sc));
+      timeEl.textContent = Math.min(t, A.DURATION).toFixed(2) + ' s';
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+  }
+</script>
+</body>
+</html>

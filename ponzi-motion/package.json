@@ -1,0 +1,14 @@
+{
+  "name": "ponzi-motion",
+  "private": true,
+  "description": "Animation motion design 9:16 sans texte illustrant une pyramide de Ponzi",
+  "scripts": {
+    "stills": "node render.cjs stills --theme dark --out stills",
+    "frames:dark": "node render.cjs frames --theme dark --out .frames/dark",
+    "frames:light": "node render.cjs frames --theme light --out .frames/light",
+    "frames:alpha": "node render.cjs frames --theme alpha --out .frames/alpha"
+  },
+  "devDependencies": {
+    "playwright": "1.56.1"
+  }
+}
