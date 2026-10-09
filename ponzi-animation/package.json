@@ -1,0 +1,17 @@
+{
+  "name": "pyramide-de-ponzi-animation",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Animation motion design 9:16 (1080×1920, 60 i/s) qui explique simplement la pyramide de Ponzi — TikTok, Reels, Shorts.",
+  "scripts": {
+    "preview": "npx --yes serve -l 8080 .",
+    "soundtrack": "node scripts/soundtrack.cjs",
+    "render": "node scripts/render.cjs",
+    "render:30fps": "node scripts/render.cjs --fps 30 --out output/pyramide-de-ponzi-30fps.mp4",
+    "stills": "node scripts/render.cjs --stills 2.4,7.5,19.3,33.9,40.8,46.6,53,58.6",
+    "build": "npm run soundtrack && npm run render"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.1"
+  }
+}

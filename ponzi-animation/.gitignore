@@ -1,0 +1,5 @@
+node_modules/
+output/stills/
+output/*.wav
+output/.raw-*
+output/.stem-*
