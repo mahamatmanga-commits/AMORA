@@ -5,7 +5,7 @@ d'une explication face caméra (TikTok, Reels, Shorts).
 
 - Format : 1080 × 1920 (9:16), 60 images/s, 38 s
 - Aucun texte, aucun chiffre, aucun symbole monétaire : tout passe par les formes, les couleurs et le mouvement
-- Trois fonds : sombre (bleu nuit), clair (crème) et transparent (ProRes 4444 avec couche alpha)
+- Deux fonds sobres : sombre (bleu nuit) et clair (crème)
 
 ## Fichiers livrés (`export/`)
 
@@ -13,7 +13,6 @@ d'une explication face caméra (TikTok, Reels, Shorts).
 |---|---|
 | `ponzi_complet_dark.mp4` | film complet, fond bleu nuit |
 | `ponzi_complet_light.mp4` | film complet, fond clair |
-| `ponzi_complet_transparent.mov` | film complet sans fond (ProRes 4444 + alpha) à poser par-dessus ta vidéo |
 | `scenes_dark/`, `scenes_light/` | une vidéo par scène, pour caler chaque passage sur ta voix |
 
 ## Déroulé
@@ -36,7 +35,7 @@ Code couleur : **or** = organisateur, **bleu/violet** = nouvel investisseur,
   fige la dernière image (« figer l'image » dans CapCut, *Frame Hold* dans Premiere) ou ralentis le clip de la scène.
 - Le fond sombre a un léger grain pour éviter les bandes de dégradé après la recompression TikTok/Instagram.
 - Zones sûres : l'essentiel reste dans la bande centrale (≈ 380 à 1 560 px de hauteur), à l'écart des boutons et légendes de l'application.
-- Version transparente : ProRes 4444 avec couche alpha, pour Premiere Pro, Final Cut Pro ou DaVinci Resolve. Sur un montage mobile, utilise plutôt la version fond sombre ou clair.
+- Une version sans fond (ProRes 4444 avec couche alpha, pour Premiere Pro, Final Cut Pro ou DaVinci Resolve) peut être générée avec le thème `alpha` ; elle n'est pas livrée ici car elle pèse environ 1,8 Go.
 
 ## Régénérer / modifier
 
